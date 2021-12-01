@@ -1,5 +1,7 @@
+//Importation du package moongoose pour la DB
 const mongoose = require('mongoose');
 
+//Définition les schéma pour moongoose sous forme Json
 const sauceSchema = mongoose.Schema({
     userId: { type: String, required: true },
     name: { type: String, required: true },
