@@ -6,7 +6,6 @@ const mongoose = require('mongoose');
 const config = require('./config');
 
 //connection à mangoDB  avec id et mot de passe
-
 mongoose.connect(`mongodb+srv://${config.dbUser}:${config.dbPass}@${config.dbUrl}/${config.dbName}?retryWrites=true&w=majority`)
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
@@ -22,10 +21,20 @@ app.use((req, res, next) => {
     next();
 });
 
-//gestion des principaux chemins de l'API sauces,auth,images
 
+const rateLimit = require("express-rate-limit");
+const bruteForceLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000, // plage de 10 minutes
+    max: 200, // bloquer après 200 requests
+    message:
+        "Trop d'appels à l'API depuis cet IP, veuillez réessayer après 10 minutes"
+});
+
+//gestion des principaux chemins de l'API sauces,auth,images
 const path = require('path');
 app.use('/images', express.static(path.join(__dirname, 'images')));
+
+app.use('/api', bruteForceLimiter);
 
 const userRoutes = require('./routes/user');
 app.use('/api/auth', userRoutes);
