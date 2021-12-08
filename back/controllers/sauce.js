@@ -121,7 +121,7 @@ const iDislikeSauce = (sauceUpdates, userId) => {
     return sauceUpdates;
 }
 
-const iDontCareSauce = (sauceUpdates, userId) => {
+const iCancelLikeSauce = (sauceUpdates, userId) => {
     // si il a déjà aimé cette sauce
     if (sauceUpdates.usersLiked.includes(userId)) {
         // on le retire de la liste des user qui likes
@@ -153,7 +153,7 @@ exports.likeSauce = (req, res, next) => {
                 sauceUpdates = iLikeSauce(sauceUpdates, userId);
                 // sinon si l'utilisateur veut annuler son like
             } else if (req.body.like == 0) {
-                sauceUpdates = iDontCareSauce(sauceUpdates, userId);
+                sauceUpdates = iCancelLikeSauce(sauceUpdates, userId);
             } else if (req.body.like == -1) {
                 sauceUpdates = iDislikeSauce(sauceUpdates, userId);
             }

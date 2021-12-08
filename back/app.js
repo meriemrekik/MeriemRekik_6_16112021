@@ -1,4 +1,4 @@
-//importation des packages de Node.js
+//importation des packages de express
 
 const express = require('express');
 // const bodyParser = require('body-parser');
@@ -22,6 +22,8 @@ app.use((req, res, next) => {
 });
 
 
+// on définit une sécurité pour limitter le nombre d'appel à l'api
+// que peut faire une seule personne sur un temps définit
 const rateLimit = require("express-rate-limit");
 const bruteForceLimiter = rateLimit({
     windowMs: 10 * 60 * 1000, // plage de 10 minutes
