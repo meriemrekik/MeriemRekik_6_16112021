@@ -4,29 +4,13 @@ const router = express.Router();
 
 // on importe des middleware du package express validator et rate limit
 const { body, check, validationResult } = require('express-validator');
-const rateLimit = require("express-rate-limit");
-
-// on définit un rateLimit pour la création de compte
-const createAccountLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // plage de 1h
-    max: 5, // bloquer après 5 requests
-    message:
-        "Trop de comptes crées depuis cet IP, veuillez réessayer après 1 heure"
-});
-
-// on définit un rateLimit pour la tentative de connexion à un compte
-const loginAccountLimiter = rateLimit({
-    windowMs: 30 * 60 * 1000, // plage de 30 minutes
-    max: 5, // bloquer après 5 requests
-    message:
-        "Trop de tentatives de login depuis cet IP, veuillez réessayer après 30 minutes"
-});
+const rateLimit = require('../middleware/rate-limit');
 
 // on import le controller user
 const userCtrl = require('../controllers/user');
 
 router.post('/signup',
-    createAccountLimiter,
+    rateLimit.createAccountLimiter,
     body('email').isEmail(),
     check('password')
         .isLength({ min: 8 })
@@ -47,6 +31,6 @@ router.post('/signup',
     },
     userCtrl.signup
 );
-router.post('/login', loginAccountLimiter, body('email').isEmail(), userCtrl.login);
+router.post('/login', rateLimit.loginAccountLimiter, body('email').isEmail(), userCtrl.login);
 
 module.exports = router;//export du router
